@@ -1,5 +1,5 @@
 import { headers } from "next/headers";
-import { WebhookReceiver } from "livekit-server-sdk";
+import { EgressInfo, WebhookReceiver } from "livekit-server-sdk";
 
 import { db } from "@/lib/db";
 
@@ -39,5 +39,34 @@ export async function POST(req: Request) {
         isLive: false,
       },
     });
+  }
+
+  if (event.event === "egress_updated") {
+    let egress = event.egressInfo as EgressInfo;
+    if (egress) {
+      await db.egress.update({
+        where: {
+          egressId: egress?.egressId,
+        },
+        data: {
+          egressJson: JSON.parse(JSON.stringify(egress)),
+        },
+      });
+    }
+  }
+
+  if (event.event === "egress_ended") {
+    let egress = event.egressInfo as EgressInfo;
+    if (egress) {
+      await db.egress.update({
+        where: {
+          egressId: egress?.egressId,
+        },
+        data: {
+          hasEnded: true,
+          egressJson: JSON.parse(JSON.stringify(egress)),
+        },
+      });
+    }
   }
 }

@@ -38,6 +38,8 @@ model Stream {
   serverUrl String? @db.Text
   streamKey String? @db.Text
 
+  egresses  Egress[]
+
   isLive Boolean @default(false)
   isChatEnabled Boolean @default(true)
   isChatDelayed Boolean @default(false)
@@ -52,6 +54,24 @@ model Stream {
   @@index([userId])
   @@index([ingressId])
   // @@fulltext([name])
+}
+
+model Egress {
+  id            String @id @default(uuid())
+  egressId      String @unique
+  egressJson    Json?
+  hasEnded      Boolean
+  audioTrackId  String
+  videoTrackId  String
+
+  streamId  String
+  stream    Stream  @relation(fields: [streamId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([streamId])
+  @@index([egressId])
 }
 
 model Follow {
