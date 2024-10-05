@@ -39,8 +39,8 @@ export const Header = ({
   const isLive = !!participant;
   const participantCount = participants.length - 1;
 
-  const hostAsViewer = `host-${hostIdentity}`;
-  const isHost = viewerIdentity === hostAsViewer;
+  // const hostAsViewer = `host-${hostIdentity}`;
+  const isHost = viewerIdentity === hostIdentity;
 
   return (
     <div className="flex flex-col lg:flex-row gap-y-4 lg:gap-y-0 items-start justify-between px-4">

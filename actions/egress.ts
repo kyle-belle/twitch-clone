@@ -4,7 +4,12 @@ import { db } from "@/lib/db";
 import { getSelf } from "@/lib/auth-service";
 import { revalidatePath } from "next/cache";
 
-import { EgressClient, EncodedFileType } from "livekit-server-sdk";
+import {
+  EgressClient,
+  EncodedFileOutput,
+  EncodedFileType,
+  S3Upload,
+} from "livekit-server-sdk";
 
 const egressClient = new EgressClient(process.env.LIVEKIT_API_URL!);
 
@@ -25,20 +30,20 @@ export const startEgress = async (
   }
 
   const outputs = {
-    file: {
+    file: new EncodedFileOutput({
       fileType: EncodedFileType.MP4,
       filepath: "{room_name}-{time}",
       output: {
         case: "s3",
-        value: {
+        value: new S3Upload({
           accessKey: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
           secret: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
           bucket: process.env.CLOUDFLARE_R2_EGRESS_BUCKET!,
           region: "ENAM",
           forcePathStyle: true,
-        },
+        }),
       },
-    },
+    }) /* ,
     segments: {
       filenamePrefix: "{room_name}-{time}",
       playlistName: "{room_name}-{time}.m3u8",
@@ -53,7 +58,7 @@ export const startEgress = async (
           forcePathStyle: true,
         },
       },
-    },
+    } */,
   };
 
   const egress = await egressClient.startTrackCompositeEgress(

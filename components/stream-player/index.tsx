@@ -1,6 +1,5 @@
 "use client";
 
-import { Stream, User } from "@prisma/client";
 import { LiveKitRoom } from "@livekit/components-react";
 
 import { cn } from "@/lib/utils";
@@ -13,7 +12,6 @@ import { ChatToggle } from "./chat-toggle";
 import { Chat, ChatSkeleton } from "./chat";
 import { Video, VideoSkeleton } from "./video";
 import { Header, HeaderSkeleton } from "./header";
-import { EgressInfo } from "livekit-server-sdk";
 
 type CustomStream = {
   id: string;
@@ -47,19 +45,24 @@ type CustomUser = {
 
 interface StreamPlayerProps {
   user: CustomUser;
+  viewer: CustomUser;
   stream: CustomStream;
   isFollowing: boolean;
 }
 
 export const StreamPlayer = ({
   user,
+  viewer,
   stream,
   isFollowing,
 }: StreamPlayerProps) => {
-  const { token, name, identity } = useViewerToken(user.id);
+  const { token, name /* identity */ } = useViewerToken(user.id);
+
+  // console.log({ token, name, identity, viewerId: viewer.id, userId: user.id });
+
   const { collapsed } = useChatSidebar((state) => state);
 
-  if (!token || !name || !identity) {
+  if (!token || !name /* || !identity */) {
     return <StreamPlayerSkeleton />;
   }
 
@@ -89,7 +92,7 @@ export const StreamPlayer = ({
           <Header
             hostName={user.username}
             hostIdentity={user.id}
-            viewerIdentity={identity}
+            viewerIdentity={viewer.id}
             imageUrl={user.imageUrl}
             isFollowing={isFollowing}
             isRecording={latestEgress && !latestEgress.hasEnded}
@@ -98,14 +101,14 @@ export const StreamPlayer = ({
           />
           <InfoCard
             hostIdentity={user.id}
-            viewerIdentity={identity}
+            viewerIdentity={viewer.id}
             name={stream.name}
             thumbnailUrl={stream.thumbnailUrl}
           />
           <AboutCard
             hostName={user.username}
             hostIdentity={user.id}
-            viewerIdentity={identity}
+            viewerIdentity={viewer.id}
             bio={user.bio}
             followedByCount={user._count.followedBy}
           />

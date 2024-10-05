@@ -12,6 +12,7 @@ interface CreatorPageProps {
 const CreatorPage = async ({ params }: CreatorPageProps) => {
   const externalUser = await currentUser();
   const user = await getUserByUsername(params.username);
+  const viewer = await getUserByUsername();
 
   if (!user || user.externalUserId !== externalUser?.id || !user.stream) {
     throw new Error("Unauthorized");
@@ -19,7 +20,12 @@ const CreatorPage = async ({ params }: CreatorPageProps) => {
 
   return (
     <div className="h-full">
-      <StreamPlayer user={user} stream={user.stream} isFollowing />
+      <StreamPlayer
+        user={user}
+        viewer={viewer}
+        stream={user.stream}
+        isFollowing
+      />
     </div>
   );
 };

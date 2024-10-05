@@ -49,14 +49,17 @@ export const Actions = ({
   }
 
   const handleStartRecording = () => {
-    const audioTracks = [...participant.audioTracks.entries()];
-    const videoTracks = [...participant.videoTracks.entries()];
-    const mainAudioTrack = audioTracks[0];
-    const mainVideoTrack = videoTracks[0];
-    if (roomInfo.name && mainAudioTrack && mainVideoTrack) {
-      startTransition(() => {
-        startEgress(roomInfo.name, mainVideoTrack[0], mainAudioTrack[0]);
-      });
+    if (participant) {
+      const audioTracks = [...participant.audioTrackPublications.entries()];
+      const videoTracks = [...participant.videoTrackPublications.entries()];
+      const mainAudioTrack = audioTracks[0];
+      const mainVideoTrack = videoTracks[0];
+      console.log({ audioTracks, videoTracks });
+      if (roomInfo.name && mainAudioTrack && mainVideoTrack) {
+        startTransition(() => {
+          startEgress(roomInfo.name, mainVideoTrack[0], mainAudioTrack[0]);
+        });
+      }
     }
   };
 
