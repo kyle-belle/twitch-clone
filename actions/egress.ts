@@ -39,7 +39,7 @@ export const startEgress = async (
           accessKey: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
           secret: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
           bucket: process.env.CLOUDFLARE_R2_EGRESS_BUCKET!,
-          region: "ENAM",
+          endpoint: process.env.CLOUDFLARE_R2_EGRESS_ENDPOINT,
           forcePathStyle: true,
         }),
       },

@@ -7,9 +7,8 @@ import {
   IngressVideoEncodingPreset,
   RoomServiceClient,
   type CreateIngressOptions,
+  TrackSource,
 } from "livekit-server-sdk";
-
-import { TrackSource } from "livekit-server-sdk/dist/proto/livekit_models";
 
 import { db } from "@/lib/db";
 import { getSelf } from "@/lib/auth-service";
@@ -18,7 +17,7 @@ import { revalidatePath } from "next/cache";
 const roomService = new RoomServiceClient(
   process.env.LIVEKIT_API_URL!,
   process.env.LIVEKIT_API_KEY!,
-  process.env.LIVEKIT_API_SECRET!,
+  process.env.LIVEKIT_API_SECRET!
 );
 
 const ingressClient = new IngressClient(process.env.LIVEKIT_API_URL!);
@@ -54,22 +53,29 @@ export const createIngress = async (ingressType: IngressInput) => {
   };
 
   if (ingressType === IngressInput.WHIP_INPUT) {
-    options.bypassTranscoding = true;
+    options.enableTranscoding = false;
   } else {
     options.video = {
       source: TrackSource.CAMERA,
+      // encodingOptions: {
+      //   case: "preset",
+      //   value: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS
+      // }
+      // @ts-ignore
       preset: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS,
     };
     options.audio = {
       source: TrackSource.MICROPHONE,
-      preset: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS
+      // encodingOptions: {
+      //   case: "preset",
+      //   value: IngressVideoEncodingPreset.H264_1080P_30FPS_3_LAYERS
+      // }
+      // @ts-ignore
+      preset: IngressAudioEncodingPreset.OPUS_STEREO_96KBPS,
     };
-  };
+  }
 
-  const ingress = await ingressClient.createIngress(
-    ingressType,
-    options,
-  );
+  const ingress = await ingressClient.createIngress(ingressType, options);
 
   if (!ingress || !ingress.url || !ingress.streamKey) {
     throw new Error("Failed to create ingress");
