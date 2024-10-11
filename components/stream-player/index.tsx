@@ -12,6 +12,7 @@ import { ChatToggle } from "./chat-toggle";
 import { Chat, ChatSkeleton } from "./chat";
 import { Video, VideoSkeleton } from "./video";
 import { Header, HeaderSkeleton } from "./header";
+import Recordings from "./recordings";
 
 type CustomStream = {
   id: string;
@@ -58,8 +59,6 @@ export const StreamPlayer = ({
 }: StreamPlayerProps) => {
   const { token, name /* identity */ } = useViewerToken(user.id);
 
-  // console.log({ token, name, identity, viewerId: viewer.id, userId: user.id });
-
   const { collapsed } = useChatSidebar((state) => state);
 
   if (!token || !name /* || !identity */) {
@@ -69,8 +68,6 @@ export const StreamPlayer = ({
   const latestEgress = stream.egresses?.[0];
   const activeEgressId =
     latestEgress && !latestEgress.hasEnded && latestEgress.egressId;
-
-  console.log({ latestEgress });
 
   return (
     <>
@@ -112,6 +109,7 @@ export const StreamPlayer = ({
             bio={user.bio}
             followedByCount={user._count.followedBy}
           />
+          {user.id === viewer.id && <Recordings streamId={stream.id} />}
         </div>
         <div className={cn("col-span-1", collapsed && "hidden")}>
           <Chat

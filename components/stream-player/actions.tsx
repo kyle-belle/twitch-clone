@@ -54,7 +54,7 @@ export const Actions = ({
       const videoTracks = [...participant.videoTrackPublications.entries()];
       const mainAudioTrack = audioTracks[0];
       const mainVideoTrack = videoTracks[0];
-      console.log({ audioTracks, videoTracks });
+
       if (roomInfo.name && mainAudioTrack && mainVideoTrack) {
         startTransition(() => {
           startEgress(roomInfo.name, mainVideoTrack[0], mainAudioTrack[0]);

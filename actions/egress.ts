@@ -103,3 +103,22 @@ export const stopEgress = async (egressId: string) => {
 
   return egress;
 };
+
+export const getStreamEgresses = async (
+  streamId: string,
+  options?: { pageSize?: number; page?: number; sort?: "asc" | "desc" }
+) => {
+  const self = await getSelf();
+  const page = Math.abs(options?.page || 1);
+  const pageSize = options?.pageSize || 20;
+  const sort = options?.sort || "desc";
+
+  const egresses = await db.egress.findMany({
+    where: { streamId, stream: { userId: self.id } },
+    take: pageSize,
+    skip: (page - 1) * pageSize,
+    orderBy: { createdAt: sort },
+  });
+
+  return egresses;
+};

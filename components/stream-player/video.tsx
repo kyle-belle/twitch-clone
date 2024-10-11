@@ -3,7 +3,6 @@
 import { ConnectionState, Track } from "livekit-client";
 import {
   useConnectionState,
-  useParticipantInfo,
   useRemoteParticipant,
   useTracks,
 } from "@livekit/components-react";
@@ -13,8 +12,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OfflineVideo } from "./offline-video";
 import { LoadingVideo } from "./loading-video";
 import { LiveVideo } from "./live-video";
-import { useViewerToken } from "@/hooks/use-viewer-token";
-import { useUser } from "@clerk/nextjs";
 
 interface VideoProps {
   hostName: string;
@@ -23,19 +20,11 @@ interface VideoProps {
 
 export const Video = ({ hostName, hostIdentity }: VideoProps) => {
   const connectionState = useConnectionState();
-  const { user } = useUser();
   const participant = useRemoteParticipant(hostIdentity);
   const tracks = useTracks([
     Track.Source.Camera,
     Track.Source.Microphone,
   ]).filter((track) => track.participant.identity === hostIdentity);
-
-  const { token, name, identity } = useViewerToken(hostIdentity);
-  const info = useParticipantInfo();
-
-  console.log({ token, info, name, identity, user, userId: hostIdentity });
-
-  console.log({ tracks, participant });
 
   let content;
 
