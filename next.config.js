@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "utfs.io",
-    ],
+    domains: ["utfs.io"],
+  },
+  experimental: {
+    serverComponentsExternalPackages: ["@aws-sdk/middleware-sdk-s3"],
   },
   webpack: (config) => {
     config.module.rules.push({
@@ -16,4 +17,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;
