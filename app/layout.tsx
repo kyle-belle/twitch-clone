@@ -10,8 +10,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Streamerz",
-  description: "App for streamers",
+  title: "Tunin",
+  description: "Tunin",
 };
 
 export default function RootLayout({
