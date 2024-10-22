@@ -16,7 +16,7 @@ interface HeaderProps {
   imageUrl: string;
   hostName: string;
   hostIdentity: string;
-  viewerIdentity: string;
+  viewerIdentity: string | undefined;
   isFollowing: boolean;
   isRecording: boolean;
   activeEgressId: string | null;

@@ -71,41 +71,43 @@ export const getUserByUsername = async (username?: string) => {
   } else {
     const self = await currentUser();
 
-    if (!self || !self.username) {
-      throw new Error("Unauthorized");
-    }
-
-    user = await db.user.findUnique({
-      where: { externalUserId: self.id },
-      select: {
-        id: true,
-        externalUserId: true,
-        username: true,
-        bio: true,
-        imageUrl: true,
-        stream: {
-          select: {
-            id: true,
-            isLive: true,
-            isChatDelayed: true,
-            isChatEnabled: true,
-            isChatFollowersOnly: true,
-            thumbnailUrl: true,
-            name: true,
-            egresses: {
-              orderBy: {
-                createdAt: "desc",
+    if (self) {
+      user = await db.user.findUnique({
+        where: { externalUserId: self.id },
+        select: {
+          id: true,
+          externalUserId: true,
+          username: true,
+          bio: true,
+          imageUrl: true,
+          stream: {
+            select: {
+              id: true,
+              isLive: true,
+              isChatDelayed: true,
+              isChatEnabled: true,
+              isChatFollowersOnly: true,
+              thumbnailUrl: true,
+              name: true,
+              egresses: {
+                orderBy: {
+                  createdAt: "desc",
+                },
               },
             },
           },
-        },
-        _count: {
-          select: {
-            followedBy: true,
+          _count: {
+            select: {
+              followedBy: true,
+            },
           },
         },
-      },
-    });
+      });
+
+      return user;
+    } else {
+      return null;
+    }
   }
 
   if (!user) {

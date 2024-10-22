@@ -46,7 +46,7 @@ type CustomUser = {
 
 interface StreamPlayerProps {
   user: CustomUser;
-  viewer: CustomUser;
+  viewer?: CustomUser | null;
   stream: CustomStream;
   isFollowing: boolean;
 }
@@ -89,7 +89,7 @@ export const StreamPlayer = ({
           <Header
             hostName={user.username}
             hostIdentity={user.id}
-            viewerIdentity={viewer.id}
+            viewerIdentity={viewer?.id}
             imageUrl={user.imageUrl}
             isFollowing={isFollowing}
             isRecording={latestEgress && !latestEgress.hasEnded}
@@ -98,18 +98,18 @@ export const StreamPlayer = ({
           />
           <InfoCard
             hostIdentity={user.id}
-            viewerIdentity={viewer.id}
+            viewerIdentity={viewer?.id}
             name={stream.name}
             thumbnailUrl={stream.thumbnailUrl}
           />
           <AboutCard
             hostName={user.username}
             hostIdentity={user.id}
-            viewerIdentity={viewer.id}
+            viewerIdentity={viewer?.id}
             bio={user.bio}
             followedByCount={user._count.followedBy}
           />
-          {user.id === viewer.id && <Recordings streamId={stream.id} />}
+          {user.id === viewer?.id && <Recordings streamId={stream.id} />}
         </div>
         <div className={cn("col-span-1", collapsed && "hidden")}>
           <Chat

@@ -7,10 +7,10 @@ import { BioModal } from "./bio-modal";
 interface AboutCardProps {
   hostName: string;
   hostIdentity: string;
-  viewerIdentity: string;
+  viewerIdentity: string | undefined;
   bio: string | null;
   followedByCount: number;
-};
+}
 
 export const AboutCard = ({
   hostName,
@@ -32,14 +32,11 @@ export const AboutCard = ({
             About {hostName}
             <VerifiedMark />
           </div>
-          {isHost && (
-            <BioModal initialValue={bio} />
-          )}
+          {isHost && <BioModal initialValue={bio} />}
         </div>
         <div className="text-sm text-muted-foreground">
-          <span className="font-semibold text-primary">
-            {followedByCount}
-          </span> {followedByLabel}
+          <span className="font-semibold text-primary">{followedByCount}</span>{" "}
+          {followedByLabel}
         </div>
         <p className="text-sm">
           {bio || "This user prefers to keep an air of mystery about them."}
