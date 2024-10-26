@@ -40,7 +40,10 @@ export const resetIngresses = async (hostIdentity: string) => {
   }
 };
 
-export const createIngress = async (ingressType: IngressInput) => {
+export const createIngress = async (
+  ingressType: IngressInput,
+  url?: string
+) => {
   const self = await getSelf();
 
   await resetIngresses(self.id);
@@ -54,6 +57,12 @@ export const createIngress = async (ingressType: IngressInput) => {
 
   if (ingressType === IngressInput.WHIP_INPUT) {
     options.enableTranscoding = false;
+  } else if (ingressType === IngressInput.URL_INPUT) {
+    if (!url) {
+      throw new Error("No url provided for URL Ingress Type");
+    }
+
+    options.url = url;
   } else {
     options.video = {
       source: TrackSource.CAMERA,
@@ -77,7 +86,7 @@ export const createIngress = async (ingressType: IngressInput) => {
 
   const ingress = await ingressClient.createIngress(ingressType, options);
 
-  if (!ingress || !ingress.url || !ingress.streamKey) {
+  if (!ingress || (!ingress.url && !ingress.streamKey)) {
     throw new Error("Failed to create ingress");
   }
 
@@ -92,4 +101,28 @@ export const createIngress = async (ingressType: IngressInput) => {
 
   revalidatePath(`/u/${self.username}/keys`);
   return ingress;
+};
+
+export const deleteAllRooms = async () => {
+  const rooms = await roomService.listRooms();
+
+  console.log(rooms);
+
+  for (const room of rooms) {
+    await roomService.deleteRoom(room.name);
+  }
+};
+
+export const deleteAllIngresses = async () => {
+  const ingresses = await ingressClient.listIngress({});
+
+  console.log(ingresses);
+
+  for (const ingress of ingresses) {
+    await ingressClient.deleteIngress(ingress.ingressId);
+  }
+
+  await deleteAllRooms();
+
+  return true;
 };
