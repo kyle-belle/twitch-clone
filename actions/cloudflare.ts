@@ -1,6 +1,10 @@
 "use server";
 
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const S3 = new S3Client({
@@ -22,6 +26,27 @@ export const getEgressSignedUrl = async (fileName: string) => {
     }),
     { expiresIn: 24 * 60 * 60 }
   );
+  return {
+    fileName,
+    url,
+  };
+};
+
+export const getSignedUploadUrl = async (
+  fileName: string,
+  type?: "read" | "write"
+) => {
+  const opts = {
+    Bucket: process.env.CLOUDFLARE_R2_UPLOAD_BUCKET,
+    Key: fileName,
+  };
+
+  const url = await getSignedUrl(
+    S3,
+    type === "write" ? new PutObjectCommand(opts) : new GetObjectCommand(opts),
+    { expiresIn: 24 * 60 * 60 }
+  );
+
   return {
     fileName,
     url,

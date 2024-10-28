@@ -13,6 +13,7 @@ import { Chat, ChatSkeleton } from "./chat";
 import { Video, VideoSkeleton } from "./video";
 import { Header, HeaderSkeleton } from "./header";
 import Recordings from "./recordings";
+import Uploads from "./uploads";
 
 type CustomStream = {
   id: string;
@@ -57,7 +58,7 @@ export const StreamPlayer = ({
   stream,
   isFollowing,
 }: StreamPlayerProps) => {
-  const { token, name /* identity */ } = useViewerToken(user.id);
+  const { token, name /* identity */, refresh } = useViewerToken(user.id);
 
   const { collapsed } = useChatSidebar((state) => state);
 
@@ -79,6 +80,7 @@ export const StreamPlayer = ({
       <LiveKitRoom
         token={token}
         serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_WS_URL}
+        onDisconnected={refresh}
         className={cn(
           "grid grid-cols-1 lg:gap-y-0 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-6 h-full",
           collapsed && "lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2"
@@ -109,6 +111,7 @@ export const StreamPlayer = ({
             bio={user.bio}
             followedByCount={user._count.followedBy}
           />
+          {user.id === viewer?.id && <Uploads />}
           {user.id === viewer?.id && <Recordings streamId={stream.id} />}
         </div>
         <div className={cn("col-span-1", collapsed && "hidden")}>

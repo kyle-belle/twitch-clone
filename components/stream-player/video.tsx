@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OfflineVideo } from "./offline-video";
 import { LoadingVideo } from "./loading-video";
 import { LiveVideo } from "./live-video";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 interface VideoProps {
   hostName: string;
@@ -27,18 +27,6 @@ export const Video = ({ hostName, hostIdentity }: VideoProps) => {
     Track.Source.Camera,
     Track.Source.Microphone,
   ]).filter((track) => track.participant.identity === hostIdentity);
-  const previousState = useRef<ConnectionState | null>(null);
-  useEffect(() => {
-    // console.log({ connectionState, previousState: previousState.current });
-    if (
-      previousState.current &&
-      connectionState === ConnectionState.Disconnected &&
-      previousState.current !== ConnectionState.Disconnected
-    ) {
-      setTimeout(() => location.reload(), 600);
-    }
-    previousState.current = connectionState;
-  }, [connectionState]);
 
   let content;
 

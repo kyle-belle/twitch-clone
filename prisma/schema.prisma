@@ -22,6 +22,22 @@ model User {
   following      Follow[] @relation("Following")
   followedBy     Follow[] @relation("FollowedBy")
   stream         Stream?
+  upload         Upload[]
+}
+
+model Upload {
+  id        String @id @default(uuid())
+  filepath  String
+  metadata  Json?
+
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@index([filepath])
 }
 
 model Stream {
