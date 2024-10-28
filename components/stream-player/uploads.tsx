@@ -29,9 +29,7 @@ const Uploads = () => {
   const [urlToStream, setUrlToStream] = useState<string | null>(null);
 
   const getUploads = async () => {
-    console.log("Get Uploads");
     const uploads = await getUserUploads();
-    console.log("Got User Uploads", uploads);
     // filter unique filepaths
     const uniqueUploads = uploads.filter(
       ({ filepath }, i, a) => a.findIndex((f) => f.filepath === filepath) === i
@@ -39,17 +37,11 @@ const Uploads = () => {
 
     const newUploads = await Promise.all(
       uniqueUploads.map(async (u) => {
-        console.log("Getting signed upload url");
         const url = (await getSignedUploadUrl(u.filepath)).url;
-        console.log("Got signed upload url", url);
 
         return { ...u, url };
       })
     );
-
-    console.log("Got New Uploads");
-
-    console.log({ newUploads });
 
     setUploads((u) =>
       [...u, ...newUploads].filter(

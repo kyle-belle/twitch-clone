@@ -28,7 +28,10 @@ export const getUserUploads = async () => {
   const self = await getSelf();
 
   if (self) {
-    const uploads = await db.upload.findMany({ where: { userId: self.id } });
+    const uploads = await db.upload.findMany({
+      where: { userId: self.id },
+      orderBy: { createdAt: "desc" },
+    });
 
     return uploads;
   }
