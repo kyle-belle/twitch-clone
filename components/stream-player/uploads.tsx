@@ -30,24 +30,28 @@ const Uploads = () => {
 
   const getUploads = async () => {
     const uploads = await getUserUploads();
-    // filter unique filepaths
-    const uniqueUploads = uploads.filter(
-      ({ filepath }, i, a) => a.findIndex((f) => f.filepath === filepath) === i
-    );
 
-    const newUploads = await Promise.all(
-      uniqueUploads.map(async (u) => {
-        const url = (await getSignedUploadUrl(u.filepath)).url;
+    if (uploads) {
+      // filter unique filepaths
+      const uniqueUploads = uploads.filter(
+        ({ filepath }, i, a) =>
+          a.findIndex((f) => f.filepath === filepath) === i
+      );
 
-        return { ...u, url };
-      })
-    );
+      const newUploads = await Promise.all(
+        uniqueUploads.map(async (u) => {
+          const url = (await getSignedUploadUrl(u.filepath)).url;
 
-    setUploads((u) =>
-      [...u, ...newUploads].filter(
-        (r, i, a) => a.findIndex((rr) => rr.url === r.url) === i
-      )
-    );
+          return { ...u, url };
+        })
+      );
+
+      setUploads((u) =>
+        [...u, ...newUploads].filter(
+          (r, i, a) => a.findIndex((rr) => rr.url === r.url) === i
+        )
+      );
+    }
   };
 
   useEffect(() => {
