@@ -20,7 +20,6 @@ const UploadRecording = ({ onUpload }: Props) => {
 
       await axios
         .put(url, file, {
-          timeout: 10000,
           onUploadProgress: (p) => {
             if (p.total) {
               setFileUploadProgress(Math.min(p.loaded / p.total, 0.99));
